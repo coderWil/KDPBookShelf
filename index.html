@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KDP Bookshelf</title>
+<!-- All page styling lives in styles/styles.css (see that file for the
+     color-variable reference and per-section notes). -->
+<link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+
+  <!-- Skip-to-content link (WCAG 2.4.1). Invisible until it receives
+       keyboard focus — see .skip-link in styles.css for the mechanics.
+       Must stay the very first focusable element on the page, and its
+       href must keep pointing at <main id="main-content"> below. -->
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <!-- ============================================================
+       Header / primary navigation
+       Desktop: brand + inline link list. Below the 700px breakpoint
+       (styles.css) this collapses to a hamburger button that reveals a
+       dropdown; the open/close behavior is wired up in scripts/script.js
+       via the #nav-toggle / #primary-nav-list ids below — don't rename
+       either id without updating that file.
+       ============================================================ -->
+  <header>
+    <div class="nav-wrap">
+      <a class="brand" href="#home">WebSweetWeb Bookshelf</a>
+
+      <!-- Hamburger button. Only visible (display:flex) below 700px;
+           aria-expanded is kept in sync with the dropdown's open/closed
+           state by script.js for screen-reader users. Always present in
+           the DOM (not JS-injected) so it's reachable without JS. -->
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="primary-nav-list" aria-label="Toggle navigation menu">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+
+      <nav aria-label="Primary">
+        <ul id="primary-nav-list">
+          <!-- These three are same-page anchor links to the section ids
+               below (#home, #bookshelf, #contact). If a section id is ever
+               renamed, update the matching href here too. -->
+          <li><a href="#home">Home</a></li>
+          <li><a href="#bookshelf">Bookshelf</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <!-- Only nav link that leaves the page. The visually-hidden span
+               warns screen-reader users it opens a new tab (WCAG 3.2.5);
+               sighted users get the same info implicitly since the tab
+               just opens without replacing this page. -->
+          <li><a href="https://www.websweetweb.us" target="_blank" rel="noopener noreferrer">WebSweetWeb.us<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         Hero
+         Simple intro banner, no adjustable behavior — just headline,
+         subtext, and a jump link down to the bookshelf.
+         ============================================================ -->
+    <section id="home" class="hero">
+      <div class="hero-inner">
+        <h1>Coloring Books Made for Curious Kids</h1>
+        <p>Bright, hand-crafted coloring books designed to spark creativity and learning. Browse the shelf and grab a copy on Amazon today.</p>
+        <a class="btn" href="#bookshelf">Browse the Bookshelf</a>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Bookshelf
+         One <article class="book-card"> per book. To add a title, copy an
+         existing card, swap the image/copy, and update the Amazon link —
+         the grid layout (styles.css) reflows automatically, no CSS
+         changes needed.
+         ============================================================ -->
+    <section id="bookshelf">
+      <div class="section-inner">
+        <h2 class="section-title">The Bookshelf</h2>
+        <!-- Amazon Associates Operating Agreement requires this exact
+             wording, placed clearly near the affiliate links (not buried
+             in a footer/about page). Don't reword or remove it while any
+             .amazon-btn links remain on the page. -->
+        <p class="affiliate-disclosure">As an Amazon Associate I earn from qualifying purchases.</p>
+        <div class="book-grid">
+
+          <article class="book-card">
+            <img src="images/balloons-balloons-everywhere.jpg" alt="Cover of Balloons, Balloons, Everywhere coloring book">
+            <div class="book-card-body">
+              <h3>Balloons, Balloons, Everywhere!</h3>
+              <p>A festive coloring book filled with 50 balloon-themed scenes, from birthday parties and parades to carnivals and county fairs. Perfect for kids who love color, celebration, and a little bit of whimsy on every page.</p>
+              <!-- Amazon Associates affiliate link. The `tag=williamseiter-20`
+                   query param is the affiliate tracking id — if the
+                   Associates tag ever changes, every book link on this page
+                   needs that param updated, not just the ASIN. aria-label
+                   overrides the visible "Buy on Amazon" text so screen
+                   readers announce which book this button is for and that
+                   it opens a new tab (see WebSweetWeb.us note above for why). -->
+              <a class="amazon-btn" href="https://www.amazon.com/Balloons-Everywhere-coloring-Coloring-Balloon/dp/B0HF7RT7JX?crid=1G5UCLAXWUTQY&dib=eyJ2IjoiMSJ9.aagaoGaov4TTGa3SEFIIjYi0ThfFGV8p77Qc8-OSg9BJiiyR_iLUhGcOL7FXBhLjA6n5La2IIkadwsJoJcUuo0u4w6bGCM3f9DqG02v0FgjDAy5U0kFjbAY9dLK7IuCmBZaGDfJWtP1d4dqlAb4Fnp97bl6vewJvaoyAXByb8r0XzoZJmMp4SzUrF52Scxb9I3KAdCB3wmbbZBRfevNyeUVQyEBRBOwhROEUPsPY5r0.sLqFkh00ze2ZdYYC2AGy1oynAZ0j5T6hMtn8pkcr7m8&dib_tag=se&keywords=balloons+balloons+everywhere&qid=1786992077&sprefix=balloons+balloons+everywher%2Caps%2C207&sr=8-1&linkCode=ll2&tag=williamseiter-20&linkId=45b4cddc902a89274cd95f7626362e80&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl" target="_blank" rel="sponsored noopener noreferrer" aria-label="Buy Balloons, Balloons, Everywhere! on Amazon (opens in a new tab)">Buy on Amazon</a>
+            </div>
+          </article>
+
+          <article class="book-card">
+            <img src="images/usa-state-flags-coloring-book.png" alt="Cover of USA State Flags: The Complete A to Z Coloring Book">
+            <div class="book-card-body">
+              <h3>USA State Flags: The Complete A to Z Coloring Book</h3>
+              <p>An educational coloring adventure through all 50 states! Each page features a state flag to color alongside a full-color reference guide, making learning the states fun for young explorers ages 3 and up.</p>
+              <!-- Shortened amzn.to affiliate link (same tag as above, just
+                   pre-shortened rather than a full amazon.com URL). -->
+              <a class="amazon-btn" href="https://amzn.to/4gmuit5" target="_blank" rel="sponsored noopener noreferrer" aria-label="Buy USA State Flags: The Complete A to Z Coloring Book on Amazon (opens in a new tab)">Buy on Amazon</a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Contact
+         Submits to Formspree via AJAX (no page reload) using the
+         @formspree/ajax library — see the script tags near the bottom of
+         <body> and scripts/script.js for the init code.
+
+         Sync points if the Formspree form is ever recreated / the
+         endpoint changes:
+           - form action URL below (https://formspree.io/f/xppaynby)
+           - formId in scripts/script.js's formspree('initForm', ...) call
+         Both must reference the same form id, or submissions will fail.
+         ============================================================ -->
+    <section id="contact">
+      <div class="section-inner">
+        <h2 class="section-title">Contact</h2>
+        <!-- Populated by the Formspree JS on submit (stays empty, and
+             therefore invisible, until then — see .form-message:not(:empty)
+             in styles.css). role/aria-live make sure screen-reader users
+             hear the result even though there's no page navigation to
+             announce it naturally (WCAG 4.1.3). Error is "assertive"
+             (interrupts) since it needs the user's attention; success is
+             "polite" (waits its turn). -->
+        <div data-fs-success class="form-message form-message-success" role="status" aria-live="polite"></div>
+        <div data-fs-error class="form-message form-message-error" role="alert" aria-live="assertive"></div>
+        <form id="contact-form" class="contact-form" action="https://formspree.io/f/xppaynby" method="POST">
+          <!-- All four fields are `required`; this makes that requirement
+               visible up front (WCAG 3.3.2) instead of only surfacing it
+               after a failed submit. -->
+          <p class="form-note">All fields are required.</p>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <!-- data-fs-field / data-fs-error hooks are read by the
+                 @formspree/ajax library to mark this field aria-invalid and
+                 to know which error span (below) to populate on failure —
+                 don't remove them even though they're not used by our own
+                 CSS/JS. aria-describedby links the input to that error span
+                 directly, in case the library doesn't. -->
+            <input type="text" id="name" name="name" data-fs-field required aria-describedby="name-error">
+            <span class="field-error" id="name-error" data-fs-error="name"></span>
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject" data-fs-field required aria-describedby="subject-error">
+            <span class="field-error" id="subject-error" data-fs-error="subject"></span>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" data-fs-field required aria-describedby="email-error">
+            <span class="field-error" id="email-error" data-fs-error="email"></span>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" data-fs-field required aria-describedby="message-error"></textarea>
+            <span class="field-error" id="message-error" data-fs-error="message"></span>
+          </div>
+          <!-- data-fs-submit-btn: the ajax library disables this while the
+               request is in flight and re-enables it on completion. -->
+          <button class="submit-btn" type="submit" data-fs-submit-btn>Send Message</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Our own JS (nav toggle + the Formspree init stub) — see
+       scripts/script.js for details on both.
+
+       This tag intentionally has no defer/async: it needs to run and
+       define window.formspree before the CDN library below processes its
+       queue. Keep it before the CDN <script> tag if either is ever moved. -->
+  <script src="scripts/script.js"></script>
+  <!-- Formspree's hosted AJAX library. This is a third-party file, not
+       project code, so it isn't included in scripts/script.js — there's
+       nothing local to move here, only this reference to keep. `defer`
+       means it runs after the page finishes parsing, once window.formspree
+       (set up above) already exists. -->
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
+  <footer>
+    <p>&copy; 2026 WebSweetWeb Bookshelf. Site by <a href="https://www.websweetweb.us" target="_blank" rel="noopener noreferrer">WebSweetWeb.us<span class="visually-hidden"> (opens in a new tab)</span></a></p>
+  </footer>
+
+</body>
+</html>

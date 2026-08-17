@@ -1,0 +1,563 @@
+/*
+ * KDP Bookshelf stylesheet.
+ *
+ * Palette: pale green + pale orange as the two section backgrounds, a
+ * medium blue as the only accent color (links, buttons, focus states),
+ * and black for all body text. Everything below pulls its colors from
+ * the custom properties defined in :root — to re-theme the site, edit
+ * the values there rather than hunting for hardcoded hex codes.
+ */
+:root {
+  --pale-green: #e3f3e1;
+  --pale-green-deep: #cfe9cb; /* slightly darker green, used for borders/dividers on pale-green backgrounds */
+  --pale-orange: #fbe6d4;
+  --pale-orange-deep: #f6d3ac; /* slightly darker orange, used for borders/dividers on pale-orange backgrounds */
+  /* Accent blue is used both as a text color on white and as a button
+     background with white text on top of it. #3366cc was chosen (over the
+     original #3d78c9) because it's the darkest "medium blue" that still
+     clears the WCAG AA 4.5:1 contrast ratio against white in both
+     directions (measured ~5.37:1). If this is changed, re-check contrast
+     against #ffffff before shipping — anything lighter than roughly
+     #3d78c9 will likely fail. */
+  --accent-blue: #3366cc;
+  --accent-blue-dark: #2c5a99; /* hover/focus state for accent-blue buttons and links */
+  --text-color: #000000;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Respect the OS-level "reduce motion" setting: users who've opted out of
+   animations shouldn't be forced into a smooth-scroll on anchor clicks. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Standard "sr-only" pattern: visually hides content while keeping it in
+   the accessibility tree, e.g. the "(opens in a new tab)" notices on
+   external links. Do not use display:none/visibility:hidden for this —
+   those also hide the text from screen readers, defeating the purpose. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+  background-color: var(--white);
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  color: var(--text-color);
+  margin-top: 0;
+}
+
+a {
+  color: var(--accent-blue);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Skip-to-content link (WCAG 2.4.1). Sits off-screen at -9999px so it
+   never affects layout, and jumps on-screen the moment it receives
+   keyboard focus (see .skip-link:focus) — i.e. the first Tab press on the
+   page reveals it. Mouse/touch users never see it. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background-color: var(--accent-blue);
+  color: var(--white);
+  padding: 12px 20px;
+  z-index: 1000;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 0 0 6px 0;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* ============================================================
+   Header / Navigation
+   Sticky header with a desktop inline nav that collapses into a
+   hamburger-triggered dropdown below the 700px breakpoint (see the
+   @media block further down). The open/close behavior itself lives in
+   scripts/script.js — this file only controls what each state looks like.
+   ============================================================ */
+header {
+  background-color: var(--white);
+  border-bottom: 3px solid var(--accent-blue);
+  position: sticky; /* also makes header the positioning context for the
+                        absolutely-positioned mobile dropdown below */
+  top: 0;
+  z-index: 100;
+}
+
+.nav-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 600;
+  padding: 6px 4px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+nav a:hover,
+nav a:focus {
+  color: var(--accent-blue);
+  border-bottom-color: var(--accent-blue);
+}
+
+/* Hamburger button. Hidden on desktop by default; the 700px media query
+   below flips this to display:flex. Kept in the DOM at all times (rather
+   than injected by JS) so it's always keyboard/screen-reader reachable. */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.nav-toggle-bar {
+  width: 26px;
+  height: 3px;
+  background-color: var(--text-color);
+  border-radius: 2px;
+  transition: background-color 0.2s ease;
+}
+
+.nav-toggle:hover .nav-toggle-bar,
+.nav-toggle:focus .nav-toggle-bar {
+  background-color: var(--accent-blue);
+}
+
+/* Mobile nav breakpoint. 700px was chosen to comfortably fit the brand +
+   all 4 nav links in one row above that width; adjust this single value
+   if the nav items or brand text length change enough to start wrapping
+   awkwardly on tablets. Nothing in scripts/script.js depends on this
+   number — the JS only toggles classes/attributes, so this can be edited
+   freely without touching JS. */
+@media (max-width: 700px) {
+  .nav-toggle {
+    display: flex;
+    /* Pushes the button to the right edge of the flex row instead of
+       floating in the middle — needed because the (now-collapsed, empty)
+       <nav> after it no longer takes up space to balance the
+       justify-content: space-between on .nav-wrap. */
+    margin-left: auto;
+  }
+
+  /* Dropdown panel. Hidden by default; JS toggles the .is-open class on
+     click. Positioned absolute + edge-to-edge under the sticky header
+     (top:100%, left:0, right:0) rather than inline, so opening it doesn't
+     push page content down. */
+  nav ul {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--white);
+    border-top: 1px solid var(--pale-green-deep);
+    border-bottom: 3px solid var(--accent-blue);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08);
+    padding: 8px 24px;
+  }
+
+  nav ul.is-open {
+    display: flex;
+  }
+
+  nav li {
+    width: 100%;
+  }
+
+  nav li a {
+    display: block;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--pale-green-deep);
+  }
+
+  nav li:last-child a {
+    border-bottom: none;
+  }
+}
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, var(--pale-green) 0%, var(--pale-orange) 100%);
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.hero-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 2.6rem;
+  margin-bottom: 16px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 28px;
+}
+
+.btn {
+  display: inline-block;
+  background-color: var(--accent-blue);
+  color: var(--white);
+  padding: 14px 32px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn:hover,
+.btn:focus {
+  background-color: var(--accent-blue-dark);
+}
+
+/* ============================================================
+   Shared section layout (used by #bookshelf and #contact)
+   ============================================================ */
+section {
+  padding: 70px 24px;
+}
+
+.section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 48px;
+}
+
+/* ============================================================
+   Bookshelf
+   Each book is one .book-card inside the .book-grid. To add a new book,
+   duplicate a <article class="book-card"> block in index.html — this CSS
+   needs no changes, the grid reflows automatically.
+   ============================================================ */
+#bookshelf {
+  background-color: var(--pale-green);
+}
+
+/* auto-fit + minmax(280px, 1fr): cards are never narrower than 280px: below
+   that the grid drops to fewer columns instead of squeezing cards further.
+   Raise the 280px minimum if book cover art needs more room; lower it to
+   fit more columns on wide screens. */
+/* Amazon Associates disclosure, required wording — see the HTML comment
+   above the <p class="affiliate-disclosure"> in index.html. */
+.affiliate-disclosure {
+  text-align: center;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin: -28px 0 40px;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 40px;
+}
+
+.book-card {
+  background-color: var(--white);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--pale-green-deep);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fixed height + object-fit:cover crops every cover image to the same
+   aspect ratio regardless of its original dimensions, so mismatched cover
+   art (e.g. a portrait vs. a near-square cover) still lines up evenly
+   across cards. Adjust the 340px height if cover art is being cropped too
+   aggressively. */
+.book-card img {
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  border-bottom: 3px solid var(--pale-orange-deep);
+}
+
+.book-card-body {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* lets the card body fill remaining height so... */
+}
+
+.book-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.book-card p {
+  flex-grow: 1; /* ...and this pushes the "Buy on Amazon" button to the
+                    bottom of every card, even when description lengths
+                    differ between books. */
+  margin-bottom: 20px;
+}
+
+.amazon-btn {
+  display: inline-block;
+  background-color: var(--accent-blue);
+  color: var(--white);
+  text-decoration: none;
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.amazon-btn:hover,
+.amazon-btn:focus {
+  background-color: var(--accent-blue-dark);
+}
+
+/* ============================================================
+   Contact
+   Formspree-backed contact form. The success/error messages and
+   per-field validation errors below are populated at runtime by the
+   @formspree/ajax library (see scripts/script.js) — this file only
+   defines how they look once populated.
+   ============================================================ */
+#contact {
+  background-color: var(--pale-orange);
+}
+
+.contact-form {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--white);
+  padding: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--pale-orange-deep);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.form-message {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* The success/error <div>s in index.html start empty and are filled in by
+   Formspree's JS on submit. :not(:empty) means they take up zero visual
+   space (no padding/border/margin) until that happens, so there's no need
+   for a separate "hidden" class to toggle — an empty div already collapses
+   to nothing. */
+.form-message:not(:empty) {
+  padding: 14px 18px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.form-message-success:not(:empty) {
+  background-color: var(--pale-green);
+  border: 1px solid var(--pale-green-deep);
+  color: var(--text-color);
+}
+
+.form-message-error:not(:empty) {
+  background-color: var(--pale-orange);
+  border: 1px solid var(--accent-blue);
+  color: var(--text-color);
+}
+
+.field-error {
+  display: block;
+  color: var(--accent-blue-dark);
+  font-size: 0.85rem;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.form-note {
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--pale-green-deep);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text-color);
+  background-color: var(--white);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 1px;
+  border-color: var(--accent-blue);
+}
+
+/* aria-invalid is set by Formspree's JS when a field fails validation.
+   The thicker border is a secondary (non-color-only) cue to pair with the
+   .field-error text below each field — relying on the border color change
+   alone would fail WCAG 1.4.1 (Use of Color). */
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: var(--accent-blue);
+  border-width: 2px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.submit-btn {
+  background-color: var(--accent-blue);
+  color: var(--white);
+  border: none;
+  padding: 14px 32px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Disabled controls are exempt from WCAG's contrast requirements, but
+   illegible text still makes for a confusing "is this broken?" moment, so
+   this keeps the label readable (black text) instead of the default
+   white-on-pale-green, which measures under 2:1. */
+.submit-btn:disabled {
+  background-color: var(--pale-green-deep);
+  color: var(--text-color);
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.submit-btn:hover,
+.submit-btn:focus {
+  background-color: var(--accent-blue-dark);
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+footer {
+  background-color: var(--white);
+  text-align: center;
+  padding: 24px;
+  border-top: 1px solid var(--pale-green-deep);
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: var(--accent-blue);
+  text-decoration: none;
+}
+
+footer a:hover,
+footer a:focus {
+  text-decoration: underline;
+}
+
+/* Separate, smaller breakpoint from the nav's 700px above — this one only
+   tightens hero/section padding for small phones and is intentionally
+   independent of the nav breakpoint. */
+@media (max-width: 600px) {
+  .hero {
+    padding: 56px 20px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  section {
+    padding: 50px 20px;
+  }
+}
