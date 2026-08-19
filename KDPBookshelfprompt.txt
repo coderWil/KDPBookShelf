@@ -1,0 +1,6 @@
+KDPBookshelf
+A sub-site dedicated to books I have published with Amazon ( Kindle Direct Publishing )
+
+Prompts
+A clean straight forward design that has a hero section at the top, a bookshelf section that will have pictures with descriptions and links to purchase the books directly at amazon. and a contact section which will have a form with name, subject, email address and a message section.  The form will be submittable to a url I will give later.
+The coloring scheme should be pale green and pale orange, use a medium blue for any accents and use black for all the text.  Include a 'skip to content' link at the top that will load when the user touches any keyboard button.  The top navigation should have Home, Bookshelf, Contact and WebSweetWeb.us.  Each navigation link will take the user to that section of the landing page, except the WebSweetWeb.us will take the user to that website.
