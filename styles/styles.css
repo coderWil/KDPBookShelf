@@ -9,9 +9,19 @@
  */
 :root {
   --pale-green: #e3f3e1;
-  --pale-green-deep: #cfe9cb; /* slightly darker green, used for borders/dividers on pale-green backgrounds */
+  /* Adjustable: used for borders/dividers on pale-green backgrounds (card
+     borders, the mobile nav dropdown's top border). Keep it a visibly
+     darker shade of --pale-green, not a different hue — these borders are
+     UI boundaries (card edges, section dividers) that need ~3:1 contrast
+     against --pale-green to stay perceptible (WCAG 1.4.11 Non-Text
+     Contrast); pushing it too close to --pale-green's own lightness will
+     make cards/dividers hard to distinguish from their background. */
+  --pale-green-deep: #cfe9cb;
   --pale-orange: #fbe6d4;
-  --pale-orange-deep: #f6d3ac; /* slightly darker orange, used for borders/dividers on pale-orange backgrounds */
+  /* Adjustable: same role as --pale-green-deep above, but for
+     pale-orange backgrounds (book cover image borders, the contact card's
+     outline) — same contrast guidance applies. */
+  --pale-orange-deep: #f6d3ac;
   /* Accent blue is used both as a text color on white and as a button
      background with white text on top of it. #3366cc was chosen (over the
      original #3d78c9) because it's the darkest "medium blue" that still
@@ -202,17 +212,30 @@ nav a:focus {
   }
 
   /* Dropdown panel. Hidden by default; JS toggles the .is-open class on
-     click. Positioned absolute + edge-to-edge under the sticky header
-     (top:100%, left:0, right:0) rather than inline, so opening it doesn't
-     push page content down. */
+     click. Positioned absolute under the sticky header (top:100%) rather
+     than inline, so opening it doesn't push page content down.
+
+     right:24px lines its right edge up with the hamburger button above it
+     (.nav-toggle sits at the far right of .nav-wrap, which has 24px of its
+     own horizontal padding — see .nav-wrap above — so this matches that
+     padding rather than the header's bare edge) instead of the panel
+     hanging out past the button. width:max-content sizes the panel to its
+     widest nav item (plus the 24px left/right padding below) instead of
+     stretching edge-to-edge across the screen; adjust that padding value
+     to make the panel a bit tighter or roomier around the text without
+     affecting anything else. max-width is just a safety net so a very
+     long future nav item on a very narrow phone still can't push the
+     panel past the left edge of the screen. */
   nav ul {
     display: none;
     flex-direction: column;
     gap: 0;
     position: absolute;
     top: 100%;
-    left: 0;
-    right: 0;
+    right: 24px;
+    left: auto;
+    width: max-content;
+    max-width: calc(100vw - 48px);
     background-color: var(--white);
     border-top: 1px solid var(--pale-green-deep);
     border-bottom: 3px solid var(--accent-blue);

@@ -4,3 +4,8 @@ A sub-site dedicated to books I have published with Amazon ( Kindle Direct Publi
 Prompts
 A clean straight forward design that has a hero section at the top, a bookshelf section that will have pictures with descriptions and links to purchase the books directly at amazon. and a contact section which will have a form with name, subject, email address and a message section.  The form will be submittable to a url I will give later.
 The coloring scheme should be pale green and pale orange, use a medium blue for any accents and use black for all the text.  Include a 'skip to content' link at the top that will load when the user touches any keyboard button.  The top navigation should have Home, Bookshelf, Contact and WebSweetWeb.us.  Each navigation link will take the user to that section of the landing page, except the WebSweetWeb.us will take the user to that website.
+
+
+Update this site to be WCAG compliant across all pages.  Comment the code in the pages so that a future programmer or code reviewer can follow along with how things are working.  Include any variables that can be changed in the comments and the range or examples of possible changes, and a text description of what that change will change in the UI
+
+update the nav, so when the hamburger shows up on small screens, the nav shows directly under the hamburger and has a width only as wide as the longest word in the nav ( plus some margin to be easy on the eyes ).  The regular sized screen nav looks good.
